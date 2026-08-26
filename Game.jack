@@ -1,0 +1,191 @@
+class Game {
+    static int counter;
+    static int playerScore, compScore, tieScore;
+
+    function void run() {
+        var int playerChoice, compChoice, result;
+        var boolean playing;
+        let counter = 0;
+        let playerScore = 0;
+        let compScore = 0;
+        let tieScore = 0;
+        let playing = true;
+
+        while (playing) {
+            do Game.printHeader();
+            let playerChoice = Game.getPlayerChoice();
+            if (playerChoice = -1) {
+                let playing = false;
+            } else {
+                let compChoice = Game.getComputerChoice();
+                let result = Game.judge(playerChoice, compChoice);
+                do Game.updateScore(result);
+                do Game.printResult(playerChoice, compChoice, result);
+                do Sys.wait(2200);
+            }
+        }
+
+        do Screen.clearScreen();
+        do Output.moveCursor(0, 0);
+        do Output.printString("Konacan rezultat: TI ");
+        do Output.printInt(playerScore);
+        do Output.printString(" : ");
+        do Output.printInt(compScore);
+        do Output.printString(" PROTIVNIK");
+        do Output.println();
+        do Output.printString("Nerijeseno: ");
+        do Output.printInt(tieScore);
+        do Output.println();
+        do Output.printString("Bok!");
+        return;
+    }
+
+    function void printHeader() {
+        do Screen.clearScreen();
+        do Output.moveCursor(0, 0);
+        do Output.printString("================================");
+        do Output.println();
+        do Output.printString("      KAMEN, SKARE, PAPIR");
+        do Output.println();
+        do Output.printString("================================");
+        do Output.println();
+        do Output.println();
+        do Output.printString("Tipke: 1 - Kamen   2 - Skare   3 - Papir");
+        do Output.println();
+        do Output.printString("       Q - Izlaz iz igre");
+        do Output.println();
+        do Output.println();
+        do Output.printString("--------------------------------");
+        do Output.println();
+        do Output.printString("Rezultat: TI ");
+        do Output.printInt(playerScore);
+        do Output.printString(" : ");
+        do Output.printInt(compScore);
+        do Output.printString(" PROTIVNIK");
+        do Output.println();
+        do Output.printString("--------------------------------");
+        do Output.println();
+        return;
+    }
+
+    // vraca 1/2/3 za izbor ili -1 za izlaz
+    function int getPlayerChoice() {
+        var String s;
+        var char c;
+        var int choice;
+        let choice = 0;
+        while (choice = 0) {
+            do Output.printString("Odaberi (1,2,3,q): ");
+            do Game.spinUntilKey();
+            let s = Keyboard.readLine("");
+            if (s.length() > 0) {
+                let c = s.charAt(0);
+                if (c = 49) { let choice = 1; }
+                if (c = 50) { let choice = 2; }
+                if (c = 51) { let choice = 3; }
+                if ((c = 113) | (c = 81)) { let choice = -1; }
+            }
+            if (choice = 0) {
+                do Output.printString("Nevazeci unos.");
+                do Output.println();
+            }
+            do s.dispose();
+        }
+        return choice;
+    }
+
+    // vrti brojac dok korisnik ne pritisne tipku - vrijeme reakcije = izvor nasumicnosti
+    function void spinUntilKey() {
+        while (Keyboard.keyPressed() = 0) {
+            let counter = counter + 1;
+            if (counter > 30000) {
+                let counter = 0;
+            }
+        }
+        return;
+    }
+
+    function int getComputerChoice() {
+        var int r;
+        let r = counter - (Math.multiply(counter / 3, 3));
+        let counter = 0;
+        return r + 1;
+    }
+
+    // 0 = nerijeseno, 1 = igrac pobjeduje, 2 = protivnik pobjeduje
+    function int judge(int p, int c) {
+        if (p = c) {
+            return 0;
+        }
+        if (((p = 1) & (c = 3)) | ((p = 2) & (c = 1)) | ((p = 3) & (c = 2))) {
+            return 2;
+        }
+        return 1;
+    }
+
+    function void updateScore(int result) {
+        if (result = 0) {
+            let tieScore = tieScore + 1;
+        }
+        if (result = 1) {
+            let playerScore = playerScore + 1;
+        }
+        if (result = 2) {
+            let compScore = compScore + 1;
+        }
+        return;
+    }
+
+    function void printResult(int p, int c, int result) {
+        do Output.println();
+        do Output.printString("Ti: ");
+        do Game.printChoiceName(p);
+        do Output.printString("   Protivnik: ");
+        do Game.printChoiceName(c);
+        do Output.println();
+        if (result = 0) {
+            do Output.printString("Nerijeseno!");
+            do Output.println();
+        }
+        if (result = 1) {
+            do Game.animateWin();
+        }
+        if (result = 2) {
+            do Output.printString("Protivnik pobjeduje!");
+            do Output.println();
+        }
+        return;
+    }
+
+    // treptajuci tekst kad igrac pobijedi
+    function void animateWin() {
+        var int i;
+        let i = 0;
+        while (i < 4) {
+            do Output.moveCursor(16, 0);
+            do Output.printString("POBIJEDIO SI!!!      ");
+            do Sys.wait(250);
+            do Output.moveCursor(16, 0);
+            do Output.printString("                      ");
+            do Sys.wait(150);
+            let i = i + 1;
+        }
+        do Output.moveCursor(16, 0);
+        do Output.printString("POBIJEDIO SI!!!");
+        do Output.println();
+        return;
+    }
+
+    function void printChoiceName(int choice) {
+        if (choice = 1) {
+            do Output.printString("Kamen");
+        }
+        if (choice = 2) {
+            do Output.printString("Skare");
+        }
+        if (choice = 3) {
+            do Output.printString("Papir");
+        }
+        return;
+    }
+}
