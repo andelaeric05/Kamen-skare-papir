@@ -28,7 +28,7 @@ Projekt implementira klasičnu igru kamen-škare-papir protiv računala, s tekst
 
 | Datoteka | Opis |
 |---|---|
-| `Main.jack` / `Main.vm` | Ulazna točka programa — pokreće `Game.run()`. |
+| `Main.jack` / `Main.vm` | Ulazna točka programa |
 | `Game.jack` / `Game.vm` | Sadrži svu logiku igre: ispis sučelja, obradu unosa, odabir poteza računala, suđenje rundi i praćenje rezultata. |
 
 ## Pokretanje
